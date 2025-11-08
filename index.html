@@ -22,6 +22,9 @@ Last updated by Afsa Nafe on October 26th, 2025 at 10:19 PM
   <title>Dynamic Multiplication Table</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+
   <!-- External stylesheet that defines the layout, colors, table behavior -->
   <link rel="stylesheet" href="styles.css" />
 
@@ -54,19 +57,19 @@ Last updated by Afsa Nafe on October 26th, 2025 at 10:19 PM
       <div class="grid">
         <label>
           Row Value (Minimum)
-          <input type="number" id="hStart" required />
+          <input type="number" id="hStart" name="hStart" required />
         </label>
         <label>
           Row Value (Maximum)
-          <input type="number" id="hEnd" required />
+          <input type="number" id="hEnd" name="hEnd" required />
         </label>
         <label>
           Column Value (Minimum)
-          <input type="number" id="vStart" required />
+          <input type="number" id="vStart" name="vStart" required />
         </label>
         <label>
           Column Value (Maximum)
-          <input type="number" id="vEnd" required />
+          <input type="number" id="vEnd" name="vEnd" required />
         </label>
       </div>
 
