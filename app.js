@@ -78,7 +78,6 @@ $(document).ready(function() {
         },
 
         // 3. Error Placement : This tells the plugin to not just stick the errors anywhere but inside my existing <div id='errors'>
-        errorLabelContainer: "#errors",
         wrapper: "span", // Wraps each error in a <span> instead of a <label>
 
         // 4. The Submit Handler (Most important aspect) 
@@ -187,15 +186,16 @@ $(document).ready(function() {
             }
     })
 
-        clearBtn.addEventListener("click", (e) => {
+        clearBtn.addEventListener("click", function() {
     
             // Resets everything to olding empty strings
             $("#hStart").val("");
             $("#hEnd").val("");
             $("#vStart").val("");
             $("#vEnd").val("");
-            $("#table-form").validate().resetForm();
-            $("#errors").empty();
-            tableHost.innerHTML = "";
+            
+            $("#table-form").validate().resetForm(); // Resets validation errors
+            $("#errors").empty(); // Clears any custom errors
+            $("#tableHost").empty(); // Clears the table
         });
 });

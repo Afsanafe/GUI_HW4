@@ -211,3 +211,16 @@ thead th.corner {
   z-index: 4; /* Highest layer to stay above all other headers */
   background: #000000;
 }
+
+/*
+ ===== Validation Error Styling =====
+*/
+input.error {
+  border-color: var(--error);
+  background: #2b1d1d; /* Adds a subtle red background */
+}
+
+label.error {
+  color: var(--error);
+}
+
