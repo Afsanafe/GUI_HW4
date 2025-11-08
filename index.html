@@ -22,8 +22,11 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
   <title>Dynamic Multiplication Table</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+  <script src="development-bundle/jquery-1.4.4.js"></script>
 
   <!-- External stylesheet that defines the layout, colors, table behavior -->
   <link rel="stylesheet" href="styles.css" />
@@ -58,18 +61,22 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
         <label>
           Row Value (Minimum)
           <input type="number" id="hStart" name="hStart" required />
+          <div id="hStartSlider" class="slider"></div>
         </label>
         <label>
           Row Value (Maximum)
           <input type="number" id="hEnd" name="hEnd" required />
+          <div id="hEndSlider" class="slider"></div>
         </label>
         <label>
           Column Value (Minimum)
           <input type="number" id="vStart" name="vStart" required />
+          <div id="vStartSlider" class="slider"></div>
         </label>
         <label>
           Column Value (Maximum)
           <input type="number" id="vEnd" name="vEnd" required />
+          <div id="vEndSlider" class="slider"></div>
         </label>
       </div>
 

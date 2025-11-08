@@ -19,6 +19,38 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
 // document.addEventListener("DOMContentLoaded", () => { 
 // *New* jQuery version:
 $(document).ready(function() {
+
+    // Helper function to initialize a slider and link it
+    function setupSlider(sliderId, inputId) {
+        // 1. Initialize the slider
+        $("#" + sliderId).slider({
+            min: -50,
+            max: 50,
+            value: 0, // Default value
+            // 2. Slider -> Text (Direction 1)
+            // "slide" even fires as you are dragging
+            slide: function(event, ui) {
+                $("#" + inputId).val(ui.value); // Update text box
+            }
+
+        });
+
+        // 3. Text -> Slider (Direction 2)
+        // "change" event fires when you blur (click out)
+        $("#" + inputId).on("change", function() {
+            var value = $(this).val();
+            // Also update slider when text changes
+            $("#" + sliderId).slider("value", value);
+        }); 
+    }
+
+    // Call the helper function for all four pairs
+    setupSlider("hStartSlider", "hStart");
+    setupSlider("hEndSlider", "hEnd");
+    setupSlider("vStartSlider", "vStart");
+    setupSlider("vEndSlider", "vEnd");
+
+
     // Element references
     // No longer needed due to jquery : $("#table-form") // const form = document.getElementById("table-form"); // "table-form" is the intended element in HTML
     const clearBtn = document.getElementById("clearBtn");
