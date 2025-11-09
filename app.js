@@ -26,7 +26,6 @@ $(document).ready(function() {
     $("#tabs").tabs();
 
     // --- 2. HELPER FUNCTIONS ---
-
     /**
      * Helper function to initialize a slider and link it
      */
