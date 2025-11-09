@@ -1,10 +1,7 @@
 /*
 File: app.js
-Assignment: Dynamic Multiplication Table (Interactive Web App)
-About: This webpage is similar to our HW3 webpage but the JavaScript
-code has been updated to utilize jQuery and its validate method, allowing
-to implement rules for each input, as well as a message corresponing to 
-each of the rules for all the inputs.
+Assignment: Wait until the DOM is ready before running any code that queries elements.
+document.addEventListener("DOMContentLoaded", () => { *New* jQuery version:
 
 Author: Afsa Nafe
 Affiliation: UMass Lowell, Computer Science Department
@@ -15,9 +12,7 @@ with credit to the author.
 Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
 */
 
-// Wait until the DOM is ready before running any code that queries elements.
-// document.addEventListener("DOMContentLoaded", () => { 
-// *New* jQuery version:
+
 /*
 File: app.js
 Updated for Part 2: Dynamic Tabs
@@ -232,5 +227,48 @@ $(document).ready(function() {
         $("#tableHost").empty(); // Clears the live preview table
     });
 
-    // We will add the deletion logic here next
+    // --- 5. TAB DELETION LOGIC ---
+
+    /**
+     * 1. Delete INDIVIDUAL tabs (fulfills "delete individual tabs" requirement)
+     * * We use "event delegation" by attaching the listener to the main
+     * #tabs container. This allows us to listen for clicks on 
+     * 'span.ui-icon-close' elements that don't exist yet.
+     */
+    $("#tabs").on("click", "span.ui-icon-close", function() {
+        
+        // 'this' is the <span> icon that was clicked
+        // Find the <li> parent of the icon
+        const $li = $(this).closest("li");
+        
+        // Find the ID of the content panel from the <li>'s "aria-controls" attribute
+        const panelId = $li.attr("aria-controls");
+        
+        // Remove the <li> (the tab header)
+        $li.remove();
+        
+        // Remove the content panel (the <div>)
+        $("#" + panelId).remove();
+        
+        // Refresh the tabs widget to show the changes
+        $("#tabs").tabs("refresh");
+    });
+
+    /**
+     * 2. Delete MULTIPLE tabs (fulfills "delete multiple tabs" requirement)
+     * * This adds a simple click listener to your button.
+     */
+    $("#deleteAllTabsBtn").on("click", function() {
+        
+        // Find all tab headers (<li>) EXCEPT the first one (the "Controls" tab)
+        // and remove them.
+        $("#tabs .ui-tabs-nav li:not(:first-child)").remove();
+        
+        // Find all content panels (<div>) EXCEPT the first one (#tab-controls)
+        // and remove them.
+        $("#tabs > div:not(#tab-controls)").remove();
+        
+        // Refresh the tabs widget
+        $("#tabs").tabs("refresh");
+    });
 });
