@@ -18,79 +18,130 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
 // Wait until the DOM is ready before running any code that queries elements.
 // document.addEventListener("DOMContentLoaded", () => { 
 // *New* jQuery version:
+/*
+File: app.js
+Updated for Part 2: Dynamic Tabs
+*/
+
+// Wait for the DOM to be ready
 $(document).ready(function() {
 
-    // Helper function to initialize a slider and link it
+    // --- 1. INITIALIZE WIDGETS ---
+    // This line activates the tabs!
+    $("#tabs").tabs();
+
+    // --- 2. HELPER FUNCTIONS ---
+
+    /**
+     * Helper function to initialize a slider and link it
+     */
     function setupSlider(sliderId, inputId) {
-        // 1. Initialize the slider
         $("#" + sliderId).slider({
             min: -50,
             max: 50,
-            value: 0, // Default value
-            // 2. Slider -> Text (Direction 1)
-            // "slide" even fires as you are dragging
+            value: 0,
+            // "slide" event fires as you are dragging
             slide: function(event, ui) {
-                $("#" + inputId).val(ui.value); // Update text box
+                $("#" + inputId).val(ui.value);
+                // We will add the "live preview" update here later
             }
-
         });
 
-        // 3. Text -> Slider (Direction 2)
         // "change" event fires when you blur (click out)
         $("#" + inputId).on("change", function() {
             var value = $(this).val();
-            // Also update slider when text changes
             $("#" + sliderId).slider("value", value);
-        }); 
+            // We will add the "live preview" update here later
+        });
     }
 
-    // Call the helper function for all four pairs
+    /**
+     * Builds and returns a new <table> element.
+     * This is your code, moved to be a standalone function.
+     */
+    function buildTableElement(hs, he, vs, ve) {
+        // 4) Build table: create elements in memory, then attach to DOM
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+
+        // top-left corner header
+        const corner = document.createElement("th");
+        corner.className = "corner";
+        corner.textContent = "x";
+        headRow.appendChild(corner);
+
+        // horizontal header cells
+        for (let x = hs; x <= he; x++) {
+            const th = document.createElement("th");
+            th.textContent = String(x);
+            headRow.appendChild(th);
+        }
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        // tbody rows and cells
+        const tbody = document.createElement("tbody");
+
+        for (let y = vs; y <= ve; y++) {
+            const tr = document.createElement("tr");
+            const rowTh = document.createElement("th"); // row header (left-most)
+            rowTh.textContent = String(y);
+            tr.appendChild(rowTh);
+            
+            // each cell in every row
+            for (let x = hs; x <= he; x++) {
+                const td = document.createElement("td");
+                td.textContent = String(x * y);
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr); // Correctly append <tr> to <tbody>
+        }
+        table.appendChild(tbody); // Append <tbody> to <table>
+
+        // 5) Hover handler:
+        // Using jQuery's .on() for event delegation
+        $(table).on("mouseover", "td, th", function(e) {
+            const td = $(this); // 'this' is the cell being hovered
+            if (td.closest("thead").length || td.index() === 0) return;
+
+            const t = td.closest("table");
+            t.addClass("col-hovering");
+            
+            const colIndex = td.index() + 1;
+            t.find(`tbody td:nth-child(${colIndex}), tbody th:nth-child(${colIndex})`).addClass("col-hover");
+            td.closest("tr").addClass("row-hover");
+        });
+
+        $(table).on("mouseout", "td, th", function(e) {
+            const t = $(this).closest("table");
+            t.find(".col-hover").removeClass("col-hover");
+            t.find(".row-hover").removeClass("row-hover");
+            t.removeClass("col-hovering");
+        });
+
+        return table;
+    }
+
+    // --- 3. SET UP SLIDERS ---
     setupSlider("hStartSlider", "hStart");
     setupSlider("hEndSlider", "hEnd");
     setupSlider("vStartSlider", "vStart");
     setupSlider("vEndSlider", "vEnd");
 
-
-    // Element references
-    // No longer needed due to jquery : $("#table-form") // const form = document.getElementById("table-form"); // "table-form" is the intended element in HTML
-    const clearBtn = document.getElementById("clearBtn");
-    const tableHost = document.getElementById("tableHost");
-    const errors = document.getElementById("errors");
-
-    // ========= Part 1 ======= //
-    // jQuery ($) will be used to select the form and call .validate()
-
+    // --- 4. SET UP VALIDATION & SUBMIT HANDLER ---
     $("#table-form").validate({
-        // 1. RULES : for each input
         rules: {
-            hStart: {
-                required: true,
-                number: true,
-                range: [-50, 50] // This one rule replaces the entire isNum AND inRange validation functions
-            },
-            hEnd: {
-                required: true,
-                number: true,
-                range: [-50, 50]
-            }, 
-            vStart: {
-                required:true,
-                number: true,
-                range: [-50, 50]
-            },
-            vEnd: {
-                required: true,
-                number: true,
-                range: [-50, 50]
-            }
+            hStart: { required: true, number: true, range: [-50, 50] },
+            hEnd: { required: true, number: true, range: [-50, 50] },
+            vStart: { required: true, number: true, range: [-50, 50] },
+            vEnd: { required: true, number: true, range: [-50, 50] }
         },
-
-        // 2. Custom Messages : We can insert the custom error messages here to be precise
         messages: {
-            hStart: {
+             hStart: {
                 required: "The minimum row value is required.",
                 number: "Must be a valid number.",
-                range: "Please enter a value between -50 and 50." // This suggests to user how to correct and enter valid input
+                range: "Please enter a value between -50 and 50."
             },
             hEnd: {
                 required: "The maximum row value is required.",
@@ -108,126 +159,78 @@ $(document).ready(function() {
                 range: "Please enter a value between -50 and 50."
             }
         },
+        wrapper: "span",
 
-        // 3. Error Placement : This tells the plugin to not just stick the errors anywhere but inside my existing <div id='errors'>
-        wrapper: "span", // Wraps each error in a <span> instead of a <label>
-
-        // 4. The Submit Handler (Most important aspect) 
-        // The plugin STOPS the form from submitting. And this *is the only code that will run After the for is proven valid*
+        /**
+         * This function now creates a new tab with the table.
+         */
         submitHandler: function(form) {
-            // OLD Table Building
-
-            // reset UI
-            tableHost.innerHTML = "";
-            errors.textContent = ""; // Clear errors on success
-
-            // 1) Read values from inputs (they come in as strings) = read the numbers the user types into the input boxes on my form
+            // 1) Read values from inputs
             const hStart = parseInt($("#hStart").val(), 10);
             const hEnd = parseInt($("#hEnd").val(), 10);
             const vStart = parseInt($("#vStart").val(), 10);
             const vEnd = parseInt($("#vEnd").val(), 10);
 
-            // 2) Normalize ranges (swap start/end if needed) while preserving original variables
+            // 2) Normalize ranges (swap start/end if needed)
             let hs = hStart, he = hEnd, vs = vStart, ve = vEnd;
             if (hs > he) [hs, he] = [he, hs];
             if (vs > ve) [vs, ve] = [ve, vs];
 
-            // 3) Build table - Final "business logic" check for table size
+            // 3) Final "business logic" check for table size
             const cols = (he - hs + 1);
             const rows = (ve - vs + 1);
             const cells = rows * cols;
-            const MAX_CELLS = 10000;
+            const MAX_CELLS = 10000; // From your original code
 
             if (cells > MAX_CELLS) {
-                // Manually show an error in your div and stop
-                errors.textContent = `Table too large (${cells} cells). Please reduce the range. Max is ${MAX_CELLS}`;
+                $("#errors").text(`Table too large (${cells} cells). Please reduce the range.`);
                 return;
             }
+            $("#errors").empty(); // Clear any previous errors
 
-            // 4) Build table: create elements in memory, then attach to DOM
-            const table = document.createElement("table");
-            const thead = document.createElement("thead");
-            const headRow = document.createElement("tr");
+            // 4) Create a title and unique ID for the new tab
+            const tabTitle = `[${hs} to ${he}] x [${vs} to ${ve}]`;
+            const tabId = "tab-" + new Date().getTime(); // Simple unique ID
 
-            // top-left corner header
-            const corner = document.createElement("th");
-            corner.className = "corner"; // styled in CSS (e.g. stick)
-            corner.textContent = "x";
-            headRow.appendChild(corner);
+            // 5) Create the new tab header (the <li>)
+            // We add a "close" icon to meet the "delete individual tabs" requirement
+            const $tabHeader = $("<li><a href='#" + tabId + "'>" + tabTitle + "</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>");
 
-            // horizontal header cells
-            for (let x = hs; x<=he; x++) {
-                const th = document.createElement("th");
-                th.textContent = String(x);
-                headRow.appendChild(th);
-            }
-            thead.appendChild(headRow);
-            table.appendChild(thead);
-
-            // tbody rows and cells
-            // columns 1st being generated, 1st cell each row
-            const tbody = document.createElement("tbody");
-
-            for (let y = vs; y <= ve; y++) {
-                const tr = document.createElement("tr");
-                const rowTh = document.createElement("th"); // row header (left-most)
-                rowTh.textContent = String(y);
-                tr.appendChild(rowTh);
-                
-                // each cell in every row
-                for (let x = hs; x<= he; x++) {
-                    const td = document.createElement("td");
-                    td.textContent = String(x * y);
-                    tr.appendChild(td);
-                }
-                tbody.appendChild(tr);
-            }
-            table.appendChild(tbody);
-
-            tableHost.appendChild(table);
-
-            // 5) Hover handler: highlight the hovered row and its column (excluding top header
-            // and left-most row labels by default).
-            table.addEventListener("mouseover", (e) => {
-                const td = e.target.closest("td, th");
-                if (!td) return;
-
-                // ignore the header area
-                if (td.closest("thead")) return;
-                if (td.cellIndex === 0) return; // skip left-most row-label column
-
-                const col = td.cellIndex + 1; // convert 0-based cellIndex -> 1-based nth-child
-                const t = td.closest("table");
-                t.classList.add("col-hovering");
-
-                // highlight cells in the same column within tbody
-                t.querySelectorAll(`tbody td:nth-child(${col}), tbody th:nth-child(${col})`)
-                    .forEach(el => el.classList.add("col-hover"));
-
-                td.closest("tr").classList.add("row-hover");
-            });
-
-
-            table.addEventListener("mouseout", (e) => {
-                const td = e.target.closest("td, th");
-                if (!td) return;
-                table.querySelectorAll(".col-hover").forEach(el => el.classList.remove("col-hover"));
-                table.querySelectorAll(".row-hover").forEach(el => el.classList.remove("row-hover"));
-                table.classList.remove("col-hovering");
-                });
-            }
-    })
-
-        clearBtn.addEventListener("click", function() {
-    
-            // Resets everything to olding empty strings
-            $("#hStart").val("");
-            $("#hEnd").val("");
-            $("#vStart").val("");
-            $("#vEnd").val("");
+            // 6) Create the new tab content panel (the <div>)
+            // We add the .table-wrap and .scroller classes from your HTML for styling
+            const $tabContent = $("<div id='" + tabId + "' class='table-wrap scroller'></div>");
             
-            $("#table-form").validate().resetForm(); // Resets validation errors
-            $("#errors").empty(); // Clears any custom errors
-            $("#tableHost").empty(); // Clears the table
-        });
+            // 7) Build the table using our new function
+            const $table = buildTableElement(hs, he, vs, ve);
+            
+            // 8) Put the table inside the new content panel
+            $tabContent.append($table);
+            
+            // 9) Add the new tab header and content to the widget
+            $("#tabs .ui-tabs-nav").append($tabHeader); // Add <li> to the <ul>
+            $("#tabs").append($tabContent); // Add <div> to the main #tabs
+            
+            // 10) "Refresh" the widget so it sees the new tab
+            $("#tabs").tabs("refresh");
+            
+            // 11) Automatically switch to the new tab (-1 means the last tab)
+            $("#tabs").tabs("option", "active", -1);
+        }
+    });
+
+    // --- 5. CLEAR BUTTON ---
+    $("#clearBtn").on("click", function() { // Use jQuery click listener
+        $("#hStart").val("");
+        $("#hEnd").val("");
+        $("#vStart").val("");
+        $("#vEnd").val("");
+        
+        $(".slider").slider("value", 0); // Also reset sliders
+
+        $("#table-form").validate().resetForm(); // Resets validation errors
+        $("#errors").empty(); // Clears any custom errors
+        $("#tableHost").empty(); // Clears the live preview table
+    });
+
+    // We will add the deletion logic here next
 });

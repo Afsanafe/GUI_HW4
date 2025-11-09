@@ -21,12 +21,14 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
   <meta charset="UTF-8" />
   <title>Dynamic Multiplication Table</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/tabsTheme.css">
 
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/ui-darkness/jquery-ui.css">
+  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
   <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-  <script src="development-bundle/jquery-1.4.4.js"></script>
 
   <!-- External stylesheet that defines the layout, colors, table behavior -->
   <link rel="stylesheet" href="styles.css" />
@@ -44,69 +46,66 @@ Last updated by Afsa Nafe on November 8th, 2025 at 12:53 PM
   <main class="page">
     <!-- Title shown at the top of the page -->
     <h1>Interactive Multiplication Table</h1>
+    <div id="tabs">
+      <ul>
+        <li><a href="#tab-controls">Controls</a></li>
+        </ul>
+      <div id="tab-controls">
+        <form id="table-form" class="card" novalidate>
+          <!-- 
+            Organized 2x2 grid of number inputs for user-specified range.
+            Each label wraps its corresponding input for better accessibility.
+          -->
+          <div class="grid">
+            <label>
+              Row Value (Minimum)
+              <input type="number" id="hStart" name="hStart" required />
+              <div id="hStartSlider" class="slider"></div>
+            </label>
+            <label>
+              Row Value (Maximum)
+              <input type="number" id="hEnd" name="hEnd" required />
+              <div id="hEndSlider" class="slider"></div>
+            </label>
+            <label>
+              Column Value (Minimum)
+              <input type="number" id="vStart" name="vStart" required />
+              <div id="vStartSlider" class="slider"></div>
+            </label>
+            <label>
+              Column Value (Maximum)
+              <input type="number" id="vEnd" name="vEnd" required />
+              <div id="vEndSlider" class="slider"></div>
+            </label>
+          </div>
 
-    <!-- 
-      === Input Form ===
-      Collects user inputs for table boundaries.
-      `novalidate` disables browser’s built-in pop-up validation — 
-      custom inline validation will be handled in JS instead.
-    -->
-    <form id="table-form" class="card" novalidate>
+          <!-- Instructional hint for valid input range -->
+          <p class="hint">Acceptable range: −50 to 50 (inclusive).</p>
 
-      <!-- 
-        Organized 2x2 grid of number inputs for user-specified range.
-        Each label wraps its corresponding input for better accessibility.
-      -->
-      <div class="grid">
-        <label>
-          Row Value (Minimum)
-          <input type="number" id="hStart" name="hStart" required />
-          <div id="hStartSlider" class="slider"></div>
-        </label>
-        <label>
-          Row Value (Maximum)
-          <input type="number" id="hEnd" name="hEnd" required />
-          <div id="hEndSlider" class="slider"></div>
-        </label>
-        <label>
-          Column Value (Minimum)
-          <input type="number" id="vStart" name="vStart" required />
-          <div id="vStartSlider" class="slider"></div>
-        </label>
-        <label>
-          Column Value (Maximum)
-          <input type="number" id="vEnd" name="vEnd" required />
-          <div id="vEndSlider" class="slider"></div>
-        </label>
+          <!-- 
+            Submit button: triggers table generation via JavaScript.
+            “Clear” button: resets all fields and clears generated output.
+          -->
+          <button type="submit">Save Table</button> 
+          <button type="button" id="clearBtn" class="ghost">Clear</button>
+          <button type="button" id="deleteSingleTabBtn" class="ghost">Delete This Tab</button>
+          <button type="button" id="deleteAllTabsBtn" class="ghost">Delete All Tables</button>
+          <!-- 
+            Error messages appear here dynamically.
+            role="alert" + aria-live="polite" ensures screen readers announce errors.
+            This keeps feedback accessible without intrusive popups.
+          -->
+          
+          <div id="errors" role="alert" aria-live="polite"></div>
+        </form>
+
+      <section class="table-wrap">
+        <!-- <h3>Live Preview</h3> <div id="tableHost" ...></div> -->
+        <!-- allows for scrolling -->
+        <div id="tableHost" class="scroller"></div> 
+      </section>
       </div>
-
-      <!-- Instructional hint for valid input range -->
-      <p class="hint">Acceptable range: −50 to 50 (inclusive).</p>
-
-      <!-- 
-        Submit button: triggers table generation via JavaScript.
-        “Clear” button: resets all fields and clears generated output.
-      -->
-      <button type="submit">Generate Table</button>
-      <button type="button" id="clearBtn" class="ghost">Clear</button>
-
-      <!-- 
-        Error messages appear here dynamically.
-        role="alert" + aria-live="polite" ensures screen readers announce errors.
-        This keeps feedback accessible without intrusive popups.
-      -->
-      <div id="errors" role="alert" aria-live="polite"></div>
-    </form>
-
-    <!-- 
-      === Table Display Area ===
-      The generated multiplication table is dynamically inserted here by JS.
-      `.table-wrap` provides visual container styling,
-      `.scroller` allows scrolling when the table grows large.
-    -->
-    <section class="table-wrap">
-      <div id="tableHost" class="scroller"></div>
-    </section>
+    </div>
   </main>
 </body>
 </html>

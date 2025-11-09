@@ -224,3 +224,87 @@ label.error {
   color: var(--error);
 }
 
+/*
+ ===== Part 2: jQuery UI Tweaks =====
+*/
+
+/* --- Sliders --- */
+/* Give the sliders some breathing room */
+.slider {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+/* --- Tabs Widget --- */
+
+/* By default, the tab panel has its own padding/border.
+   We remove it so our .card and .table-wrap fit perfectly. */
+  
+#tabs {
+  width:auto; padding:5px; 
+  border:1px solid #636363;
+  background-image: linear-gradient(to right, #5d00ff, #ff0000); /* Red to blue, left to right */
+  border-radius: 50;
+  }
+/* 2. The tab bar (the row of tab headers) */
+#tabs .ui-widget-header {
+  border: 0;
+  background: #000000 none; /* This is the rule you wanted */
+  font-family: Georgia;
+  border-radius: 0; /* Makes the tab bar boxy */
+}
+
+/* 3. The content panel (where your form is) */
+#tabs .ui-widget-content {
+  border: 1px solid #ffffff;
+  font-size: 80%;
+  border-radius: 0; /* Makes the content area boxy */
+}
+
+/* 4. The INACTIVE tabs */
+#tabs .ui-state-default {
+  border: 1px solid #711717;
+  border-radius: 0; /* Makes the inactive tabs boxy */
+}
+
+/* 5. The ACTIVE tab */
+#tabs .ui-state-active {
+  border: 1px solid #0c0226;
+  background-image: linear-gradient(to right, #190666, #ff0303);
+  border-radius: 50; /* Makes the active tab boxy */
+  border-bottom: 1px solid transparent; /* Blends it with the content panel */
+}
+
+
+/* Make the form card "connect" to the tab header */
+#tab-controls .card {
+  border-top-left-radius: 0; /* Square off top corners */
+  border-top-right-radius: 0;
+  margin-top: -1px; /* Overlap it slightly with the tab bar */
+  margin-bottom: 16px;
+}
+
+/* Style the "Live Preview" title */
+#tab-controls li {
+  margin: 16px 0 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--grid); /* Use your existing --grid color */
+  padding-bottom: 8px;
+}
+
+/* --- Tab Buttons --- */
+
+/* Style the "Delete All" button to look like a "danger" action */
+#deleteTabsBtn {
+  background: var(--error); /* Use your existing --error color */
+  color: var(--ink);
+  border-color: var(--error);
+  font-weight: 600;
+}
+
+/* Style the little 'x' icon that will appear on new tabs */
+.ui-tabs-nav .ui-icon-close {
+  float: left; /* Puts it to the left of the tab text */
+  margin: 0.4em 0.2em 0 0;
+  cursor: pointer;
+}
