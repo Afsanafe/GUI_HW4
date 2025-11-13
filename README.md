@@ -6,4 +6,4 @@ Web link: https://afsanafe.github.io/GUI_HW4/
 
 ## Part 2
 REPO link part2: https://github.com/Afsanafe/GUI_HW4/tree/part2
-Web Link:
+Web Link: https://afsanafe.github.io/GUI_HW4/
